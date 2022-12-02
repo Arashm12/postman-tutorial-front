@@ -10,9 +10,8 @@
     function loadDoc() {
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () {
-            var responseObj = JSON.parse(this.responseText);
-            // responseObj
-            tableCreate(4,3);
+            const responseObj = JSON.parse(this.responseText);
+            tableCreate(responseObj);
             console.log(a);
             //document.getElementById("demo").innerHTML = this.responseText;
         }
@@ -20,25 +19,28 @@
         xhttp.send();
     }
 
-    function tableCreate(rows, cols) {
+    loadDoc();
+
+    function tableCreate(responseObj) {
+        rows = responseObj.length;
+        cols = 4;
+
+
         const body = document.body,
             tbl = document.createElement('table');
         tbl.style.width = '100px';
         tbl.style.border = '1px solid black';
 
-        for (let i = 0; i < rows; i++) {
+        for (let r = 0; r < rows; r++) {
             const tr = tbl.insertRow();
-            for (let j = 0; j < cols; j++) {
-                // if (i === 2 && j === 1) {
-                //     break;
-                // } else {
-                    const td = tr.insertCell();
-                    td.appendChild(document.createTextNode(`Cell I${i}/J${j}`));
-                    // td.style.border = '1px solid black';
-                    // if (i === 1 && j === 1) {
-                    //     td.setAttribute('rowSpan', '2');
-                    // }
-                // }
+            for (let c = 0; c < cols; c++) {
+                const td = tr.insertCell();
+                if (c == 0) {
+                    td.appendChild(document.createTextNode(responseObj[0].fullName));
+                } else {
+
+                    td.appendChild(document.createTextNode(`Cell I${r}/J${c}`));
+                }
             }
         }
         body.appendChild(tbl);
