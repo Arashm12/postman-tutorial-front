@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-
 <h2>The XMLHttpRequest Object</h2>
 <button type="button" onclick="loadDoc()">Refresh data</button>
 <p id="demo"></p>
@@ -14,54 +13,74 @@
             tableCreate(responseObj);
             console.log(a);
             //document.getElementById("demo").innerHTML = this.responseText;
-        }
+        };
         xhttp.open("GET", "http://localhost:8080/api/students-leader-board/");
         xhttp.send();
     }
 
     loadDoc();
+    setInterval(loadDoc, 5000);
 
     function tableCreate(responseObj) {
         rows = responseObj.length + 1;
 
-        levels = ["", "post", "unauthorized", "get token", "put with token", "patch-bio", "delete"];
+        levels = [
+            "",
+            "post",
+            "unauthorized",
+            "get token",
+            "put with token",
+            "patch-bio",
+            "delete",
+        ];
         cols = levels.length;
 
-        const body = document.body,
-            tbl = document.createElement('table');
-        tbl.style.width = '100px';
-        tbl.style.border = '1px solid black';
-
+        const body = document.body;
+        const prevTable = document.getElementsByTagName("table");
+        prevTable.length > 0
+            ? prevTable[0].parentNode.removeChild(prevTable[0])
+            : "";
+        const tbl = document.createElement("table");
+        tbl.style.width = "600px";
+        tbl.style.border = "1px solid black";
         for (let r = 0; r < rows; r++) {
             userId = r - 1;
 
             const tr = tbl.insertRow();
             for (let c = 0; c < cols; c++) {
                 level = c - 1;
-
+                const tlWidth = 100 / (cols + 1);
                 const td = tr.insertCell();
-                if (r == 0) {   //Insert header rows
+                if (r == 0) {
+                    //Insert header rows
                     td.appendChild(document.createTextNode(levels[c]));
-
-                } else if (c == 0) {    //Insert user names
-                    td.appendChild(document.createTextNode(responseObj[userId].fullName));
-
+                    td.style.width = tlWidth + "%";
+                } else if (c == 0) {
+                    //Insert user names
+                    td.appendChild(
+                        document.createTextNode(responseObj[userId].fullName)
+                    );
+                    td.style.width = tlWidth * 1.5 + "%";
                 } else {
-                    if (responseObj[userId].userLevel == level) {   //Fill with * to indicate user level
-                        td.appendChild(document.createTextNode(`*`));
-                        td.style.border = '1px solid black';
+                    if (responseObj[userId].userLevel == level) {
+                        //Fill with * to indicate user level
+                        let dummy = "\u{26F9}";
+                        td.appendChild(document.createTextNode(dummy));
+                        td.style.border = "1px solid black";
+                        td.style.textAlign = "center";
+                        td.style.width = tlWidth + "%";
                     } else {
                         // td.appendChild(document.createTextNode(`Cell I${r}/J${c}`));
                         td.appendChild(document.createTextNode(``));
-                        td.style.border = '1px solid black';
+                        td.style.border = "1px solid black";
+                        td.style.textAlign = "center";
+                        td.style.width = tlWidth + "%";
                     }
                 }
             }
         }
         body.appendChild(tbl);
     }
-
 </script>
-
 </body>
 </html>
