@@ -15,16 +15,17 @@
             console.log(a);
             //document.getElementById("demo").innerHTML = this.responseText;
         }
-        xhttp.open("GET", "http://localhost:8080/api/students/");
+        xhttp.open("GET", "http://localhost:8080/api/students-leader-board/");
         xhttp.send();
     }
 
     loadDoc();
 
     function tableCreate(responseObj) {
-        rows = responseObj.length;
-        cols = 4;
+        rows = responseObj.length + 1;
 
+        levels = ["", "post", "unauthorized", "get token", "put with token", "patch-bio", "delete"];
+        cols = levels.length;
 
         const body = document.body,
             tbl = document.createElement('table');
@@ -32,14 +33,28 @@
         tbl.style.border = '1px solid black';
 
         for (let r = 0; r < rows; r++) {
+            userId = r - 1;
+
             const tr = tbl.insertRow();
             for (let c = 0; c < cols; c++) {
-                const td = tr.insertCell();
-                if (c == 0) {
-                    td.appendChild(document.createTextNode(responseObj[0].fullName));
-                } else {
+                level = c - 1;
 
-                    td.appendChild(document.createTextNode(`Cell I${r}/J${c}`));
+                const td = tr.insertCell();
+                if (r == 0) {   //Insert header rows
+                    td.appendChild(document.createTextNode(levels[c]));
+
+                } else if (c == 0) {    //Insert user names
+                    td.appendChild(document.createTextNode(responseObj[userId].fullName));
+
+                } else {
+                    if (responseObj[userId].userLevel == level) {   //Fill with * to indicate user level
+                        td.appendChild(document.createTextNode(`*`));
+                        td.style.border = '1px solid black';
+                    } else {
+                        // td.appendChild(document.createTextNode(`Cell I${r}/J${c}`));
+                        td.appendChild(document.createTextNode(``));
+                        td.style.border = '1px solid black';
+                    }
                 }
             }
         }
